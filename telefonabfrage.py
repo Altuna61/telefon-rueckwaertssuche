@@ -15,8 +15,13 @@ from bs4 import BeautifulSoup
 import re
 
 # ------------------ Funktion zur echten Rückwärtssuche ------------------
-def suche_nummer(telefonnummer):
+# mit Standardparameter
+def suche_nummer(telefonnummer, requester=requests.get):
     try:
+        # Wenn keine Nummer eingegeben wurde
+        if not telefonnummer:
+            return "Keine Telefonnummer eingegeben."
+
         # URL der Webseite
         url = "https://www.dasoertliche.de/"
         
@@ -27,7 +32,7 @@ def suche_nummer(telefonnummer):
         }
 
         # Webseite laden mit Requests
-        response = requests.get(
+        response = requester(
             url,
             params=params,         # Parameter übergeben
             timeout=10,            # Abbruch nach 10 Sekunden, falls die Seite nicht reagiert
@@ -75,7 +80,7 @@ def suche_nummer(telefonnummer):
         return "Kein Eintrag gefunden."
 
     except Exception as e:
-        # Falls ein Fehler passiert (z. B. Internetproblem)
+        # Falls ein Fehler passiert (z. B. Internetproblem)
         return f"Fehler bei der Suche: {e}"
 
 # ------------------ GUI ------------------
@@ -108,7 +113,9 @@ ausgabe = tk.Text(fenster, height=8)
 ausgabe.pack(fill="both", padx=10, pady=5)  # fill="both" → horizontal + vertikal ausfüllen
 
 # Hält das Fenster offen (ohne mainloop() würde es sofort schließen)
-fenster.mainloop()
+# damit GUI nicht automatisch startet, wenn wir die Datei importieren
+if __name__ == "__main__":
+    fenster.mainloop()
 
 # ------------------ Git Hinweise ------------------
 # Git Repo erstellen:
@@ -142,5 +149,4 @@ fenster.mainloop()
  
 
 # source venv/bin/activate
-# python telefonnrabfrage.py 
-
+# python telefonnrabfrage.py
